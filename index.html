@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grandee Technology | KNX Akıllı Bina Otomasyonu</title>
+  <meta name="description" content="Grandee Technology: KNX akıllı otomasyon sistemleri üretimi ve uygulaması.">
+  <style>
+    :root {
+      --bg: #0b1220;
+      --bg-2: #111a2e;
+      --card: #16213a;
+      --line: #24314f;
+      --text: #e8edf7;
+      --muted: #9aa8c2;
+      --accent: #2fd3a3;
+      --accent-2: #3b82f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* Üst menü */
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(11, 18, 32, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 24px; }
+    .logo { font-weight: 700; letter-spacing: 0.5px; }
+    .logo span { color: var(--accent); }
+    .nav-right { display: flex; align-items: center; gap: 28px; }
+    nav ul { display: flex; gap: 28px; list-style: none; }
+    nav ul a { color: var(--muted); font-size: 15px; transition: color .2s; }
+    nav ul a:hover { color: var(--text); }
+
+    /* Dil butonu */
+    .lang {
+      display: flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px;
+      background: var(--bg-2);
+    }
+    .lang button {
+      border: 0; background: transparent; color: var(--muted); cursor: pointer;
+      font: inherit; font-size: 13px; font-weight: 700; letter-spacing: .5px;
+      padding: 5px 12px; border-radius: 999px; transition: background .2s, color .2s;
+    }
+    .lang button:hover { color: var(--text); }
+    .lang button.active { background: var(--accent); color: #062a20; }
+
+    /* Giriş */
+    .hero {
+      padding: 96px 0 80px;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(47, 211, 163, 0.12), transparent 45%),
+        radial-gradient(circle at 10% 90%, rgba(59, 130, 246, 0.12), transparent 45%);
+    }
+    .hero .wrap { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; align-items: center; }
+    .tag {
+      display: inline-block; padding: 6px 14px; border-radius: 999px;
+      border: 1px solid var(--line); color: var(--accent); font-size: 13px; font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .lead { color: var(--muted); font-size: 18px; max-width: 560px; margin-bottom: 32px; }
+
+    /* ---- Hareketli başlık ---- */
+    h1 { font-size: clamp(34px, 5vw, 52px); line-height: 1.2; margin-bottom: 18px; }
+    h1 .line { display: block; }
+    /* Kelime kelime giriş animasyonu */
+    h1 .w {
+      display: inline-block; opacity: 0; transform: translateY(24px); filter: blur(6px);
+      animation: wordIn .8s cubic-bezier(.2, .7, .2, 1) forwards;
+    }
+    @keyframes wordIn { to { opacity: 1; transform: none; filter: none; } }
+
+    /* Değişen vurgulu kelime */
+    .rotator {
+      display: inline-block; position: relative;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), #8b5cf6, var(--accent));
+      background-size: 300% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: flow 6s linear infinite;
+      filter: drop-shadow(0 0 18px rgba(47, 211, 163, 0.35));
+    }
+    @keyframes flow { to { background-position: 300% 0; } }
+    .rotator::after { /* yanıp sönen imleç */
+      content: ""; position: absolute; right: -10px; top: 12%; bottom: 12%; width: 3px;
+      border-radius: 2px; background: var(--accent); animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .rotator .word { display: inline-block; }
+    .rotator .word.out { animation: wordOut .35s ease-in forwards; }
+    .rotator .word.in  { animation: wordSwap .45s cubic-bezier(.2, .7, .2, 1) forwards; }
+    @keyframes wordOut { to { opacity: 0; transform: translateY(-60%); filter: blur(6px); } }
+    @keyframes wordSwap {
+      from { opacity: 0; transform: translateY(60%); filter: blur(6px); }
+      to   { opacity: 1; transform: none; filter: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      h1 .w, .rotator, .rotator::after, .rotator .word { animation: none !important; opacity: 1; transform: none; filter: none; }
+    }
+
+    .btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 26px; border-radius: 10px; font-weight: 600; font-size: 16px;
+      transition: transform .15s, box-shadow .2s, background .2s;
+    }
+    .btn-primary { background: var(--accent); color: #062a20; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(47, 211, 163, 0.3); }
+    .btn-ghost { border: 1px solid var(--line); color: var(--text); }
+    .btn-ghost:hover { background: var(--card); }
+
+    .photo-box { position: relative; justify-self: center; }
+    .photo-box::before {
+      content: ""; position: absolute; inset: -14px; border-radius: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); opacity: .35; filter: blur(24px);
+    }
+    .photo {
+      position: relative; width: 320px; height: 380px; border-radius: 22px; overflow: hidden;
+      border: 1px solid var(--line); background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .photo .fallback { font-size: 72px; font-weight: 700; color: var(--accent); display: none; }
+    .photo.no-img img { display: none; }
+    .photo.no-img .fallback { display: block; }
+
+    /* Bölümler */
+    section { padding: 88px 0; }
+    section.alt { background: var(--bg-2); }
+    .sec-title { font-size: 32px; margin-bottom: 12px; }
+    .sec-sub { color: var(--muted); max-width: 640px; margin-bottom: 48px; }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .about-grid p { color: var(--muted); margin-bottom: 16px; }
+    .about-grid p strong { color: var(--text); }
+    .pill-list { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; }
+    .pill { padding: 10px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px;
+      transition: transform .2s, border-color .2s;
+    }
+    .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .icon {
+      width: 48px; height: 48px; border-radius: 12px; margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: center; font-size: 24px;
+      background: rgba(47, 211, 163, 0.12);
+    }
+    .card h3 { font-size: 19px; margin-bottom: 10px; }
+    .card p { color: var(--muted); font-size: 15px; }
+
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; counter-reset: step; }
+    .step { position: relative; padding-top: 52px; }
+    .step::before {
+      counter-increment: step; content: "0" counter(step);
+      position: absolute; top: 0; left: 0; font-size: 30px; font-weight: 700; color: var(--accent);
+    }
+    .step h3 { font-size: 18px; margin-bottom: 8px; }
+    .step p { color: var(--muted); font-size: 15px; }
+
+    /* İletişim */
+    .contact {
+      text-align: center; background: var(--card); border: 1px solid var(--line);
+      border-radius: 24px; padding: 64px 32px;
+    }
+    .contact p { color: var(--muted); max-width: 560px; margin: 0 auto 32px; }
+    .contact .btns { justify-content: center; }
+
+    footer { padding: 32px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; text-align: center; }
+
+    /* Mobil */
+    @media (max-width: 900px) {
+      .hero .wrap, .about-grid { grid-template-columns: 1fr; }
+      .photo-box { order: -1; }
+      .cards { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      nav ul { display: none; }
+    }
+    @media (max-width: 600px) {
+      .cards, .steps { grid-template-columns: 1fr; }
+      .photo { width: 260px; height: 310px; }
+      section { padding: 64px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="wrap">
+      <a href="#" class="logo">Grandee <span>Technology</span></a>
+      <div class="nav-right">
+        <ul>
+          <li><a href="#hakkimda" data-i18n="navAbout">Hakkımda</a></li>
+          <li><a href="#hizmetler" data-i18n="navServices">Hizmetler</a></li>
+          <li><a href="#surec" data-i18n="navProcess">Süreç</a></li>
+          <li><a href="#iletisim" data-i18n="navContact">İletişim</a></li>
+        </ul>
+        <div class="lang" role="group" aria-label="Dil / Language">
+          <button type="button" data-lang="tr" class="active">TR</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <div>
+        <span class="tag" data-i18n="tag">KNX Üretici &amp; Sistem Entegratörü</span>
+        <h1 id="title"></h1>
+        <p class="lead" data-i18n="lead">
+          Merhaba, ben <strong>Volkan Alçınkaya</strong>. Grandee Technology çatısı altında KNX akıllı
+          otomasyon ürünleri üretiyor, bu sistemlerin projelendirme ve uygulamasını uçtan uca yapıyorum.
+        </p>
+        <div class="btns">
+          <a class="btn btn-primary mail" data-subject="subjInfo" href="mailto:volkan@mmworld.com.tr">
+            ✉️ <span data-i18n="mailBtn">Mail Gönder</span>
+          </a>
+          <a class="btn btn-ghost" href="#hizmetler" data-i18n="seeServices">Hizmetleri Gör</a>
+        </div>
+      </div>
+
+      <div class="photo-box">
+        <div class="photo" id="photo">
+          <img src="profil.jpg" alt="Volkan Alçınkaya - Grandee Technology"
+               onerror="document.getElementById('photo').classList.add('no-img')">
+          <div class="fallback">VA</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="hakkimda">
+    <div class="wrap">
+      <h2 class="sec-title" data-i18n="aboutTitle">Hakkımda</h2>
+      <p class="sec-sub" data-i18n="aboutSub">Üretimden sahadaki devreye almaya kadar tek elden KNX çözümleri.</p>
+      <div class="about-grid">
+        <div>
+          <p data-i18n="about1"><strong>Grandee Technology</strong> ile uluslararası KNX standardıyla uyumlu
+            akıllı bina otomasyon cihazları geliştiriyor ve üretiyorum.</p>
+          <p data-i18n="about2">Markalarım arasında <strong>MM Electro</strong> da yer alıyor.</p>
+          <p data-i18n="about3">Ürettiğimiz sistemleri konutlarda, villalarda, otellerde ve ticari binalarda bizzat
+            uyguluyoruz. Böylece cihazı tasarlayan ekip ile sahada kuran ekip aynı oluyor; bu da
+            daha hızlı çözüm ve daha güvenilir bir sistem demek.</p>
+          <p data-i18n="about4">Hedefim; konforu artıran, enerji tasarrufu sağlayan ve yıllarca sorunsuz çalışan
+            otomasyon sistemleri kurmak.</p>
+        </div>
+        <div class="pill-list">
+          <span class="pill" data-i18n="p1">KNX Cihaz Üretimi</span>
+          <span class="pill" data-i18n="p2">ETS Programlama</span>
+          <span class="pill" data-i18n="p3">Aydınlatma Kontrolü</span>
+          <span class="pill" data-i18n="p4">Perde &amp; Panjur</span>
+          <span class="pill" data-i18n="p5">HVAC / İklimlendirme</span>
+          <span class="pill" data-i18n="p6">Enerji Yönetimi</span>
+          <span class="pill" data-i18n="p7">Akıllı Ev</span>
+          <span class="pill" data-i18n="p8">Otel Oda Kontrolü</span>
+          <span class="pill" data-i18n="p9">Ticari Binalar</span>
+          <span class="pill" data-i18n="p10">Mobil Uygulama Entegrasyonu</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="hizmetler" class="alt">
+    <div class="wrap">
+      <h2 class="sec-title" data-i18n="svcTitle">Hizmetler</h2>
+      <p class="sec-sub" data-i18n="svcSub">Üretim ve uygulamayı birlikte sunarak projenin her aşamasında yanınızdayız.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="icon">🏭</div>
+          <h3 data-i18n="s1t">KNX Ürün Üretimi</h3>
+          <p data-i18n="s1d">Anahtarlama ve dimmer aktüatörleri, sensörler, tuş panelleri ve kontrol cihazları.</p>
+        </div>
+        <div class="card">
+          <div class="icon">📐</div>
+          <h3 data-i18n="s2t">Projelendirme</h3>
+          <p data-i18n="s2d">İhtiyaç analizi, sistem tasarımı, cihaz listesi ve maliyet planlaması.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🔧</div>
+          <h3 data-i18n="s3t">Uygulama &amp; Devreye Alma</h3>
+          <p data-i18n="s3d">Sahada kurulum, ETS ile programlama, test ve sorunsuz teslim.</p>
+        </div>
+        <div class="card">
+          <div class="icon">💡</div>
+          <h3 data-i18n="s4t">Aydınlatma &amp; Senaryolar</h3>
+          <p data-i18n="s4d">Tek tuşla sahneler, zaman programları ve hareket sensörlü aydınlatma.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🌡️</div>
+          <h3 data-i18n="s5t">İklimlendirme &amp; Enerji</h3>
+          <p data-i18n="s5d">Oda bazlı sıcaklık kontrolü ve enerji tüketimini azaltan akıllı senaryolar.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🛠️</div>
+          <h3 data-i18n="s6t">Bakım &amp; Destek</h3>
+          <p data-i18n="s6d">Teslim sonrası teknik destek, sistem genişletme ve güncellemeler.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="surec">
+    <div class="wrap">
+      <h2 class="sec-title" data-i18n="procTitle">Nasıl Çalışıyoruz?</h2>
+      <p class="sec-sub" data-i18n="procSub">Fikirden teslime kadar net ve şeffaf bir süreç.</p>
+      <div class="steps">
+        <div class="step">
+          <h3 data-i18n="st1t">Keşif</h3>
+          <p data-i18n="st1d">Mekânı ve ihtiyaçlarınızı birlikte inceliyoruz.</p>
+        </div>
+        <div class="step">
+          <h3 data-i18n="st2t">Tasarım</h3>
+          <p data-i18n="st2d">Size özel KNX sistem projesini hazırlıyoruz.</p>
+        </div>
+        <div class="step">
+          <h3 data-i18n="st3t">Uygulama</h3>
+          <p data-i18n="st3d">Kendi ürettiğimiz cihazlarla kurulumu yapıyoruz.</p>
+        </div>
+        <div class="step">
+          <h3 data-i18n="st4t">Teslim &amp; Destek</h3>
+          <p data-i18n="st4d">Sistemi devreye alıp kullanımını anlatıyor, destekte kalıyoruz.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="iletisim" class="alt">
+    <div class="wrap">
+      <div class="contact">
+        <h2 class="sec-title" data-i18n="ctTitle">Projenizi konuşalım</h2>
+        <p data-i18n="ctText">Evinizi ya da işletmenizi akıllı hale getirmek mi istiyorsunuz? Bir mail atın, en kısa sürede dönüş yapayım.</p>
+        <div class="btns">
+          <a class="btn btn-primary mail" data-subject="subjProject" href="mailto:volkan@mmworld.com.tr">
+            ✉️ <span data-i18n="mailBtn">Mail Gönder</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      © <span id="yil"></span> Volkan Alçınkaya · Grandee Technology · MM Electro · <span data-i18n="footer">KNX Akıllı Bina Otomasyon Sistemleri</span>
+    </div>
+  </footer>
+
+  <script>
+    const EMAIL = 'volkan@mmworld.com.tr';
+
+    const T = {
+      tr: {
+        pageTitle: 'Grandee Technology | KNX Akıllı Bina Otomasyonu',
+        // Başlık: önce, değişen kelimeler, sonra
+        h1Before: 'Binaları',
+        h1Words: ['akıllı', 'verimli', 'güvenli', 'konforlu'],
+        h1After: 'hale getiriyorum.',
+        navAbout: 'Hakkımda', navServices: 'Hizmetler', navProcess: 'Süreç', navContact: 'İletişim',
+        tag: 'KNX Üretici &amp; Sistem Entegratörü',
+        lead: 'Merhaba, ben <strong>Volkan Alçınkaya</strong>. Grandee Technology çatısı altında KNX akıllı otomasyon ürünleri üretiyor, bu sistemlerin projelendirme ve uygulamasını uçtan uca yapıyorum.',
+        mailBtn: 'Mail Gönder', seeServices: 'Hizmetleri Gör',
+        subjInfo: 'Grandee Technology - Bilgi Talebi', subjProject: 'Grandee Technology - Proje Talebi',
+        aboutTitle: 'Hakkımda',
+        aboutSub: 'Üretimden sahadaki devreye almaya kadar tek elden KNX çözümleri.',
+        about1: '<strong>Grandee Technology</strong> ile uluslararası KNX standardıyla uyumlu akıllı bina otomasyon cihazları geliştiriyor ve üretiyorum.',
+        about2: 'Markalarım arasında <strong>MM Electro</strong> da yer alıyor.',
+        about3: 'Ürettiğimiz sistemleri konutlarda, villalarda, otellerde ve ticari binalarda bizzat uyguluyoruz. Böylece cihazı tasarlayan ekip ile sahada kuran ekip aynı oluyor; bu da daha hızlı çözüm ve daha güvenilir bir sistem demek.',
+        about4: 'Hedefim; konforu artıran, enerji tasarrufu sağlayan ve yıllarca sorunsuz çalışan otomasyon sistemleri kurmak.',
+        p1: 'KNX Cihaz Üretimi', p2: 'ETS Programlama', p3: 'Aydınlatma Kontrolü', p4: 'Perde &amp; Panjur',
+        p5: 'HVAC / İklimlendirme', p6: 'Enerji Yönetimi', p7: 'Akıllı Ev', p8: 'Otel Oda Kontrolü',
+        p9: 'Ticari Binalar', p10: 'Mobil Uygulama Entegrasyonu',
+        svcTitle: 'Hizmetler',
+        svcSub: 'Üretim ve uygulamayı birlikte sunarak projenin her aşamasında yanınızdayız.',
+        s1t: 'KNX Ürün Üretimi', s1d: 'Anahtarlama ve dimmer aktüatörleri, sensörler, tuş panelleri ve kontrol cihazları.',
+        s2t: 'Projelendirme', s2d: 'İhtiyaç analizi, sistem tasarımı, cihaz listesi ve maliyet planlaması.',
+        s3t: 'Uygulama &amp; Devreye Alma', s3d: 'Sahada kurulum, ETS ile programlama, test ve sorunsuz teslim.',
+        s4t: 'Aydınlatma &amp; Senaryolar', s4d: 'Tek tuşla sahneler, zaman programları ve hareket sensörlü aydınlatma.',
+        s5t: 'İklimlendirme &amp; Enerji', s5d: 'Oda bazlı sıcaklık kontrolü ve enerji tüketimini azaltan akıllı senaryolar.',
+        s6t: 'Bakım &amp; Destek', s6d: 'Teslim sonrası teknik destek, sistem genişletme ve güncellemeler.',
+        procTitle: 'Nasıl Çalışıyoruz?', procSub: 'Fikirden teslime kadar net ve şeffaf bir süreç.',
+        st1t: 'Keşif', st1d: 'Mekânı ve ihtiyaçlarınızı birlikte inceliyoruz.',
+        st2t: 'Tasarım', st2d: 'Size özel KNX sistem projesini hazırlıyoruz.',
+        st3t: 'Uygulama', st3d: 'Kendi ürettiğimiz cihazlarla kurulumu yapıyoruz.',
+        st4t: 'Teslim &amp; Destek', st4d: 'Sistemi devreye alıp kullanımını anlatıyor, destekte kalıyoruz.',
+        ctTitle: 'Projenizi konuşalım',
+        ctText: 'Evinizi ya da işletmenizi akıllı hale getirmek mi istiyorsunuz? Bir mail atın, en kısa sürede dönüş yapayım.',
+        footer: 'KNX Akıllı Bina Otomasyon Sistemleri'
+      },
+      en: {
+        pageTitle: 'Grandee Technology | KNX Smart Building Automation',
+        h1Before: 'Making buildings',
+        h1Words: ['smart', 'efficient', 'secure', 'comfortable'],
+        h1After: '',
+        navAbout: 'About', navServices: 'Services', navProcess: 'Process', navContact: 'Contact',
+        tag: 'KNX Manufacturer &amp; System Integrator',
+        lead: 'Hi, I\'m <strong>Volkan Alçınkaya</strong>. Under Grandee Technology, I manufacture KNX smart automation products and handle the design and installation of these systems end to end.',
+        mailBtn: 'Send Email', seeServices: 'View Services',
+        subjInfo: 'Grandee Technology - Information Request', subjProject: 'Grandee Technology - Project Inquiry',
+        aboutTitle: 'About Me',
+        aboutSub: 'KNX solutions from a single source, from manufacturing to on-site commissioning.',
+        about1: 'With <strong>Grandee Technology</strong>, I develop and manufacture smart building automation devices compliant with the international KNX standard.',
+        about2: 'My brands also include <strong>MM Electro</strong>.',
+        about3: 'We install the systems we produce ourselves in homes, villas, hotels and commercial buildings. The team that designs the device is the same team that installs it on site, which means faster solutions and more reliable systems.',
+        about4: 'My goal is to build automation systems that increase comfort, save energy and run trouble-free for years.',
+        p1: 'KNX Device Manufacturing', p2: 'ETS Programming', p3: 'Lighting Control', p4: 'Curtains &amp; Blinds',
+        p5: 'HVAC / Climate Control', p6: 'Energy Management', p7: 'Smart Home', p8: 'Hotel Room Control',
+        p9: 'Commercial Buildings', p10: 'Mobile App Integration',
+        svcTitle: 'Services',
+        svcSub: 'By offering both manufacturing and installation, we support you at every stage of your project.',
+        s1t: 'KNX Product Manufacturing', s1d: 'Switching and dimming actuators, sensors, push-button panels and control devices.',
+        s2t: 'System Design', s2d: 'Needs analysis, system design, device lists and cost planning.',
+        s3t: 'Installation &amp; Commissioning', s3d: 'On-site installation, ETS programming, testing and a smooth handover.',
+        s4t: 'Lighting &amp; Scenes', s4d: 'One-touch scenes, time schedules and motion-sensor lighting.',
+        s5t: 'Climate &amp; Energy', s5d: 'Room-by-room temperature control and smart scenarios that cut energy use.',
+        s6t: 'Maintenance &amp; Support', s6d: 'Post-handover technical support, system expansion and updates.',
+        procTitle: 'How We Work', procSub: 'A clear and transparent process from idea to handover.',
+        st1t: 'Discovery', st1d: 'We review your space and your needs together.',
+        st2t: 'Design', st2d: 'We prepare a KNX system design tailored to you.',
+        st3t: 'Installation', st3d: 'We install using devices we manufacture ourselves.',
+        st4t: 'Handover &amp; Support', st4d: 'We commission the system, show you how to use it, and stay on for support.',
+        ctTitle: 'Let\'s talk about your project',
+        ctText: 'Want to make your home or business smarter? Send me an email and I\'ll get back to you as soon as possible.',
+        footer: 'KNX Smart Building Automation Systems'
+      }
+    };
+
+    const title = document.getElementById('title');
+    let lang = 'tr', words = [], wordIndex = 0, rotTimer = null;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Başlığı kelime kelime animasyonlu olarak kur
+    function buildTitle(t) {
+      title.innerHTML = '';
+      let delay = 0;
+      const addWord = (node) => {
+        const w = document.createElement('span');
+        w.className = 'w';
+        w.style.animationDelay = (delay += 0.12) + 's';
+        w.appendChild(node);
+        title.appendChild(w);
+        title.appendChild(document.createTextNode(' '));
+      };
+      t.h1Before.split(' ').forEach(txt => addWord(document.createTextNode(txt)));
+
+      const rot = document.createElement('span');
+      rot.className = 'rotator';
+      rot.innerHTML = '<span class="word">' + t.h1Words[0] + '</span>';
+      addWord(rot);
+
+      if (t.h1After) t.h1After.split(' ').forEach(txt => addWord(document.createTextNode(txt)));
+      else title.lastChild.remove(); // EN: sondaki boşluğu kaldır
+      title.setAttribute('aria-label', [t.h1Before, t.h1Words[0], t.h1After].join(' ').trim());
+
+      words = t.h1Words; wordIndex = 0;
+      clearInterval(rotTimer);
+      if (!reduceMotion) rotTimer = setInterval(nextWord, 2600);
+    }
+
+    // Vurgulu kelimeyi değiştir
+    function nextWord() {
+      const el = title.querySelector('.rotator .word');
+      if (!el) return;
+      el.classList.remove('in');
+      el.classList.add('out');
+      setTimeout(() => {
+        wordIndex = (wordIndex + 1) % words.length;
+        el.textContent = words[wordIndex];
+        el.classList.remove('out');
+        void el.offsetWidth; // animasyonu yeniden başlat
+        el.classList.add('in');
+      }, 350);
+    }
+
+    function setLang(l) {
+      lang = T[l] ? l : 'tr';
+      const t = T[lang];
+      document.documentElement.lang = lang;
+      document.title = t.pageTitle;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const v = t[el.dataset.i18n];
+        if (v !== undefined) el.innerHTML = v;
+      });
+      document.querySelectorAll('a.mail').forEach(a => {
+        a.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(t[a.dataset.subject]);
+      });
+      document.querySelectorAll('.lang button').forEach(b =>
+        b.classList.toggle('active', b.dataset.lang === lang));
+      buildTitle(t);
+      try { localStorage.setItem('lang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang button').forEach(b =>
+      b.addEventListener('click', () => setLang(b.dataset.lang)));
+
+    let saved = null;
+    try { saved = localStorage.getItem('lang'); } catch (e) {}
+    setLang(saved || 'tr');
+
+    document.getElementById('yil').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
